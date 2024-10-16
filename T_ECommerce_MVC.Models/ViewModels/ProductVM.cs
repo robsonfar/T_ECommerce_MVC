@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace T_ECommerce_MVC.Models.ViewModels
 {
@@ -6,7 +7,7 @@ namespace T_ECommerce_MVC.Models.ViewModels
     {
         public Product Product { get; set; }
 
-        //[ValidateNever]
+        [ValidateNever]
         public IEnumerable<SelectListItem> CategoryList { get; set; }
     }
 }

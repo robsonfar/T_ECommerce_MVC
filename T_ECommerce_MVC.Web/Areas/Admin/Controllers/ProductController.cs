@@ -2,6 +2,7 @@
 using T_ECommerce_MVC.DataAccess.Repository.IRepository;
 using T_ECommerce_MVC.Models.ViewModels;
 using T_ECommerce_MVC.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace T_ECommerce_MVC.Web.Areas.Admin.Controllers
 {
@@ -30,23 +31,22 @@ namespace T_ECommerce_MVC.Web.Areas.Admin.Controllers
         {
             ProductVM productVM = new()
             {
-                //CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
-                //{
-                //    Text = u.Name,
-                //    Value = u.Id.ToString()
-                //}),
-
+                CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }),
                 Product = new Product()
             };
 
             if (id == null || id == 0)
             {
-                //create
+                // create
                 return View(productVM);
             }
             else
             {
-                //update
+                // update
                 productVM.Product = _unitOfWork.Product.Get(u => u.Id == id, includeProperties: "ProductImages");
 
                 return View(productVM);
@@ -55,10 +55,35 @@ namespace T_ECommerce_MVC.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Upsert(ProductVM productVM, List<IFormFile> files)
+        public IActionResult Upsert(ProductVM productVM, IFormFile file)
         {
             if (ModelState.IsValid)
             {
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+
+                if (file != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    string productPath = Path.Combine(wwwRootPath, @"images\product");
+
+                    if (!string.IsNullOrEmpty(productVM.Product.ImageUrl))
+                    {
+                        //delete the old image
+                        var oldImagePath =
+                            Path.Combine(wwwRootPath, productVM.Product.ImageUrl.TrimStart('\\'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+                    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+
+                    productVM.Product.ImageUrl = @"\images\product\" + fileName;
+                }
+
                 if (productVM.Product.Id == 0)
                 {
                     _unitOfWork.Product.Add(productVM.Product);
@@ -70,53 +95,17 @@ namespace T_ECommerce_MVC.Web.Areas.Admin.Controllers
 
                 _unitOfWork.Save();
 
-
-                string wwwRootPath = _webHostEnvironment.WebRootPath;
-
-                if (files != null)
-                {
-                    foreach (IFormFile file in files)
-                    {
-                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                        string productPath = @"images\products\product-" + productVM.Product.Id;
-                        string finalPath = Path.Combine(wwwRootPath, productPath);
-
-                        if (!Directory.Exists(finalPath))
-                            Directory.CreateDirectory(finalPath);
-
-                        using (var fileStream = new FileStream(Path.Combine(finalPath, fileName), FileMode.Create))
-                        {
-                            file.CopyTo(fileStream);
-                        }
-
-                        ProductImage productImage = new()
-                        {
-                            ImageUrl = @"\" + productPath + @"\" + fileName,
-                            ProductId = productVM.Product.Id,
-                        };
-
-                        //if (productVM.Product.ProductImages == null)
-                        //    productVM.Product.ProductImages = new List<ProductImage>();
-
-                        //productVM.Product.ProductImages.Add(productImage);
-
-                    }
-
-                    _unitOfWork.Product.Update(productVM.Product);
-                    _unitOfWork.Save();
-                }
-
                 TempData["success"] = "Product created/updated successfully";
 
                 return RedirectToAction("Index");
             }
             else
             {
-                //productVM.CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
-                //{
-                //    Text = u.Name,
-                //    Value = u.Id.ToString()
-                //});
+                productVM.CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                });
 
                 return View(productVM);
             }

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace T_ECommerce_MVC.Models
 {
@@ -20,7 +21,7 @@ namespace T_ECommerce_MVC.Models
         public int? CompanyId { get; set; }
 
         [ForeignKey("CompanyId")]
-        //[ValidateNever]
+        [ValidateNever]
         public Company? Company { get; set; }
 
         [NotMapped]

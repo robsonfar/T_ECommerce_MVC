@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace T_ECommerce_MVC.Models
 {
@@ -12,14 +13,14 @@ namespace T_ECommerce_MVC.Models
         public int OrderHeaderId { get; set; }
 
         [ForeignKey("OrderHeaderId")]
-        //[ValidateNever]
+        [ValidateNever]
         public OrderHeader OrderHeader { get; set; }
 
         [Required]
         public int ProductId { get; set; }
 
         [ForeignKey("ProductId")]
-        //[ValidateNever]
+        [ValidateNever]
         public Product Product { get; set; }
 
         public int Count { get; set; }
