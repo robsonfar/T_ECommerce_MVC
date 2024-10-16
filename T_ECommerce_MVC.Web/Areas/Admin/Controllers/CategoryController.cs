@@ -2,9 +2,9 @@
 using T_ECommerce_MVC.DataAccess.Repository.IRepository;
 using T_ECommerce_MVC.Models;
 
-namespace T_ECommerce_MVC.Web.Controllers
+namespace T_ECommerce_MVC.Web.Areas.Admin.Controllers
 {
-    //[Area("Admin")]
+    [Area("Admin")]
     //[Authorize(Roles = SD.Role_Admin)]
     public class CategoryController : Controller
     {

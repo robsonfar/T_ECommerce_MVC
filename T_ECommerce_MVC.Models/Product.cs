@@ -40,10 +40,10 @@ namespace T_ECommerce_MVC.Models
         public double Price100 { get; set; }
 
         public int CategoryId { get; set; }
-
         [ForeignKey("CategoryId")]
         public Category Category { get; set; }
 
-        public List<ProductImage> ProductImages { get; set; }
+        public string ImageUrl { get; set; }
+        //public List<ProductImage> ProductImages { get; set; }
     }
 }

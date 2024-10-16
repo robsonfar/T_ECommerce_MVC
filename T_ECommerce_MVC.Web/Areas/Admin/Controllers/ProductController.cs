@@ -2,11 +2,10 @@
 using T_ECommerce_MVC.DataAccess.Repository.IRepository;
 using T_ECommerce_MVC.Models.ViewModels;
 using T_ECommerce_MVC.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace T_ECommerce_MVC.Web.Controllers
+namespace T_ECommerce_MVC.Web.Areas.Admin.Controllers
 {
-    //[Area("Admin")]
+    [Area("Admin")]
     //[Authorize(Roles = SD.Role_Admin)]
     public class ProductController : Controller
     {
@@ -96,10 +95,10 @@ namespace T_ECommerce_MVC.Web.Controllers
                             ProductId = productVM.Product.Id,
                         };
 
-                        if (productVM.Product.ProductImages == null)
-                            productVM.Product.ProductImages = new List<ProductImage>();
+                        //if (productVM.Product.ProductImages == null)
+                        //    productVM.Product.ProductImages = new List<ProductImage>();
 
-                        productVM.Product.ProductImages.Add(productImage);
+                        //productVM.Product.ProductImages.Add(productImage);
 
                     }
 
