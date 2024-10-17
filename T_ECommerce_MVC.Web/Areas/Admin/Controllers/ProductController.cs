@@ -142,5 +142,6 @@ namespace T_ECommerce_MVC.Web.Areas.Admin.Controllers
             return Json(new { success = true, message = "Delete Successful" });
         }
         #endregion
+
     }
 }
