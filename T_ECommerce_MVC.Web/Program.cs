@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using T_ECommerce_MVC.DataAccess.Data;
 using T_ECommerce_MVC.DataAccess.Repository.IRepository;
 using T_ECommerce_MVC.DataAccess.Repository;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +14,12 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Identity
+builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
+// Add Razor pages for Identity
+builder.Services.AddRazorPages();
 #endregion
 
 var app = builder.Build();
@@ -32,7 +37,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Authentication
+app.UseAuthentication();
 app.UseAuthorization();
+
+// Add Razor pages for Identity
+app.MapRazorPages();
 
 app.MapControllerRoute(
     name: "default",
