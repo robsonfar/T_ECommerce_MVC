@@ -3,11 +3,13 @@ using T_ECommerce_MVC.DataAccess.Repository.IRepository;
 using T_ECommerce_MVC.Models.ViewModels;
 using T_ECommerce_MVC.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using T_ECommerce_MVC.Util;
+using Microsoft.AspNetCore.Authorization;
 
 namespace T_ECommerce_MVC.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Authorize(Roles = SD.Role_Admin)]
+    [Authorize(Roles = SD.Role_Admin)]
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
