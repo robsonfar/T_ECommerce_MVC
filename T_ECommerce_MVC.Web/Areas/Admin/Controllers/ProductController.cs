@@ -47,7 +47,7 @@ namespace T_ECommerce_MVC.Web.Areas.Admin.Controllers
             else
             {
                 // update
-                productVM.Product = _unitOfWork.Product.Get(u => u.Id == id, includeProperties: "ProductImages");
+                productVM.Product = _unitOfWork.Product.Get(u => u.Id == id);
 
                 return View(productVM);
             }
@@ -55,7 +55,7 @@ namespace T_ECommerce_MVC.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Upsert(ProductVM productVM, IFormFile file)
+        public IActionResult Upsert(ProductVM productVM, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
