@@ -3,6 +3,8 @@ using T_ECommerce_MVC.DataAccess.Data;
 using T_ECommerce_MVC.DataAccess.Repository.IRepository;
 using T_ECommerce_MVC.DataAccess.Repository;
 using Microsoft.AspNetCore.Identity;
+using T_ECommerce_MVC.Util;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,14 +12,16 @@ var builder = WebApplication.CreateBuilder(args);
 // SERVICES
 builder.Services.AddControllersWithViews();
 
- // Database
+// Database
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 // Identity
-builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
 // Add Razor pages for Identity
 builder.Services.AddRazorPages();
 #endregion
