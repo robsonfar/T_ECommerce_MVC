@@ -111,41 +111,15 @@ namespace T_ECommerce_MVC.Web.Areas.Admin.Controllers
             }
         }
 
-        public IActionResult DeleteImage(int imageId)
-        {
-            var imageToBeDeleted = _unitOfWork.ProductImage.Get(u => u.Id == imageId);
-            int productId = imageToBeDeleted.ProductId;
-
-            if (imageToBeDeleted != null)
-            {
-                if (!string.IsNullOrEmpty(imageToBeDeleted.ImageUrl))
-                {
-                    var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, imageToBeDeleted.ImageUrl.TrimStart('\\'));
-
-                    if (System.IO.File.Exists(oldImagePath))
-                    {
-                        System.IO.File.Delete(oldImagePath);
-                    }
-                }
-
-                _unitOfWork.ProductImage.Remove(imageToBeDeleted);
-                _unitOfWork.Save();
-
-                TempData["success"] = "Deleted successfully";
-            }
-
-            return RedirectToAction(nameof(Upsert), new { id = productId });
-        }
-
         #region API CALLS
         [HttpGet]
         public IActionResult GetAll()
         {
             List<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+
             return Json(new { data = objProductList });
         }
 
-        [HttpDelete]
         public IActionResult Delete(int? id)
         {
             var productToBeDeleted = _unitOfWork.Product.Get(u => u.Id == id);
@@ -155,19 +129,11 @@ namespace T_ECommerce_MVC.Web.Areas.Admin.Controllers
                 return Json(new { success = false, message = "Error while deleting" });
             }
 
-            string productPath = @"images\products\product-" + id;
-            string finalPath = Path.Combine(_webHostEnvironment.WebRootPath, productPath);
+            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, productToBeDeleted.ImageUrl.TrimStart('\\'));
 
-            if (Directory.Exists(finalPath))
+            if (System.IO.File.Exists(oldImagePath))
             {
-                string[] filePaths = Directory.GetFiles(finalPath);
-
-                foreach (string filePath in filePaths)
-                {
-                    System.IO.File.Delete(filePath);
-                }
-
-                Directory.Delete(finalPath);
+                System.IO.File.Delete(oldImagePath);
             }
 
             _unitOfWork.Product.Remove(productToBeDeleted);
