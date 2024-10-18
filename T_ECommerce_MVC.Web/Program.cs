@@ -5,6 +5,7 @@ using T_ECommerce_MVC.DataAccess.Repository;
 using Microsoft.AspNetCore.Identity;
 using T_ECommerce_MVC.Util;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +26,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 // Needs to be after adding Identity
-builder.Services.ConfigureApplicationCookie(options => {
+builder.Services.ConfigureApplicationCookie(options =>
+{
     options.LoginPath = $"/Identity/Account/Login";
     options.LogoutPath = $"/Identity/Account/Logout";
     options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
@@ -33,6 +35,10 @@ builder.Services.ConfigureApplicationCookie(options => {
 
 // Add Razor pages for Identity
 builder.Services.AddRazorPages();
+
+// Add Stripe for payment
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+
 #endregion
 
 var app = builder.Build();
@@ -49,6 +55,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// Add Stripe for payment
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 
 // Authentication
 app.UseAuthentication();
