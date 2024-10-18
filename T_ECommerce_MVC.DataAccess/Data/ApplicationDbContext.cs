@@ -12,12 +12,17 @@ namespace T_ECommerce_MVC.DataAccess.Data
         {
         }
 
+        // Registrations
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Company> Companies { get; set; }
 
         // Identity
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+
+        // Buying
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
