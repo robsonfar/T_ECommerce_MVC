@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\T_ECommerce_MVC.Models\T_ECommerce_MVC.Models.csproj" />
+    <ProjectReference Include="..\T_ECommerce_MVC.Util\T_ECommerce_MVC.Util.csproj" />
   </ItemGroup>
 
 </Project>
