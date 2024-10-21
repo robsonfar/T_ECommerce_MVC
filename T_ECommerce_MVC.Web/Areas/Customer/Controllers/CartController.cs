@@ -129,7 +129,8 @@ namespace T_ECommerce_MVC.Web.Areas.Customer.Controllers
             {
                 //it is a regular customer account and we need to capture payment
                 //stripe logic
-                var domain = "https://localhost:7169/";
+                //var domain = "https://localhost:7169/";
+                var domain = Request.Scheme + "://" + Request.Host.Value + "/";
 
                 var options = new SessionCreateOptions
                 {

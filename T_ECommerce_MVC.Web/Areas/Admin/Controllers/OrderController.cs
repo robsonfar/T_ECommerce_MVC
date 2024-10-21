@@ -151,7 +151,8 @@ namespace T_ECommerce_MVC.Web.Areas.Admin.Controllers
             OrderVM.OrderDetail = _unitOfWork.OrderDetail.GetAll(u => u.OrderHeaderId == OrderVM.OrderHeader.Id, includeProperties: "Product");
 
             // stripe logic
-            var domain = "https://localhost:7169/";
+            //var domain = "https://localhost:7169/";
+            var domain = Request.Scheme + "://" + Request.Host.Value + "/";
 
             var options = new SessionCreateOptions
             {
