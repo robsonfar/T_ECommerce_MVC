@@ -130,6 +130,7 @@ namespace T_ECommerce_MVC.Web.Areas.Customer.Controllers
                 //it is a regular customer account and we need to capture payment
                 //stripe logic
                 var domain = "https://localhost:7169/";
+
                 var options = new SessionCreateOptions
                 {
                     SuccessUrl = domain + $"customer/cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
@@ -157,10 +158,14 @@ namespace T_ECommerce_MVC.Web.Areas.Customer.Controllers
                 }
 
                 var service = new SessionService();
+
                 Session session = service.Create(options);
+
                 _unitOfWork.OrderHeader.UpdateStripePaymentID(ShoppingCartVM.OrderHeader.Id, session.Id, session.PaymentIntentId);
                 _unitOfWork.Save();
+
                 Response.Headers.Add("Location", session.Url);
+
                 return new StatusCodeResult(303);
             }
 
@@ -196,18 +201,24 @@ namespace T_ECommerce_MVC.Web.Areas.Customer.Controllers
         public IActionResult Plus(int cartId)
         {
             var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId);
+
             cartFromDb.Count += 1;
+
             _unitOfWork.ShoppingCart.Update(cartFromDb);
             _unitOfWork.Save();
+
             return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Minus(int cartId)
         {
-            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId);
+            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId, tracked: true);
+
             if (cartFromDb.Count <= 1)
             {
-                //remove that from cart
+                // remove that from cart
+                HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
+
                 _unitOfWork.ShoppingCart.Remove(cartFromDb);
             }
             else
@@ -217,14 +228,19 @@ namespace T_ECommerce_MVC.Web.Areas.Customer.Controllers
             }
 
             _unitOfWork.Save();
+
             return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Remove(int cartId)
         {
-            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId);
+            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId, tracked: true);
+
+            HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
+
             _unitOfWork.ShoppingCart.Remove(cartFromDb);
             _unitOfWork.Save();
+
             return RedirectToAction(nameof(Index));
         }
 

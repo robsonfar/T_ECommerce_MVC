@@ -39,6 +39,14 @@ builder.Services.AddRazorPages();
 // Add Stripe for payment
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
+// Session
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options => {
+    options.IdleTimeout = TimeSpan.FromMinutes(100);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 #endregion
 
 var app = builder.Build();
@@ -61,7 +69,11 @@ StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey"
 
 // Authentication
 app.UseAuthentication();
+
 app.UseAuthorization();
+
+// Session
+app.UseSession();
 
 // Add Razor pages for Identity
 app.MapRazorPages();
