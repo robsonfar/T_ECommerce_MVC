@@ -5,6 +5,7 @@
         ICategoryRepository Category { get; }
         IProductRepository Product { get; }
         ICompanyRepository Company { get; }
+        IProductImageRepository ProductImage { get; }
 
         IApplicationUserRepository ApplicationUser { get; }
 

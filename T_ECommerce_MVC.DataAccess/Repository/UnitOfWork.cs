@@ -10,6 +10,7 @@ namespace T_ECommerce_MVC.DataAccess.Repository
         public ICategoryRepository Category { get; private set; }
         public IProductRepository Product { get; private set; }
         public ICompanyRepository Company { get; private set; }
+        public IProductImageRepository ProductImage { get; private set; }
 
         public IApplicationUserRepository ApplicationUser { get; private set; }
 
@@ -24,6 +25,7 @@ namespace T_ECommerce_MVC.DataAccess.Repository
             Category = new CategoryRepository(_db);
             Product = new ProductRepository(_db);
             Company = new CompanyRepository(_db);
+            ProductImage = new ProductImageRepository(_db);
 
             ApplicationUser = new ApplicationUserRepository(_db);
 
@@ -37,5 +39,6 @@ namespace T_ECommerce_MVC.DataAccess.Repository
         {
             _db.SaveChanges();
         }
+
     }
 }

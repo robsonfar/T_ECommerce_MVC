@@ -46,7 +46,6 @@ namespace T_ECommerce_MVC.Models
         public Category Category { get; set; }
 
         [ValidateNever]
-        public string ImageUrl { get; set; }
-        //public List<ProductImage> ProductImages { get; set; }
+        public List<ProductImage> ProductImages { get; set; }
     }
 }
